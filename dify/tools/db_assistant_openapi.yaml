@@ -1,0 +1,85 @@
+openapi: 3.0.3
+info:
+  title: DB Assistant Tool API
+  version: "0.1.0"
+servers:
+  - url: http://tool_api:8000
+paths:
+  /schema:
+    get:
+      summary: Get database schema
+      operationId: db_get_schema
+      responses:
+        '200':
+          description: Schema info
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  database:
+                    type: string
+                  columns:
+                    type: array
+                    items:
+                      type: object
+                      properties:
+                        database:
+                          type: string
+                        table:
+                          type: string
+                        column:
+                          type: string
+                        type:
+                          type: string
+                        nullable:
+                          type: boolean
+  /export_excel:
+    post:
+      summary: Export classification result to Excel (base64)
+      operationId: db_export_excel
+      requestBody:
+        required: true
+        content:
+          application/json:
+            schema:
+              type: object
+              properties:
+                database:
+                  type: string
+                columns:
+                  type: array
+                  items:
+                    type: object
+                    properties:
+                      database:
+                        type: string
+                      table:
+                        type: string
+                      column:
+                        type: string
+                      type:
+                        type: string
+                      nullable:
+                        type: boolean
+                labels:
+                  type: object
+                  additionalProperties:
+                    type: object
+                    properties:
+                      level:
+                        type: string
+                      category:
+                        type: string
+      responses:
+        '200':
+          description: Excel file as base64 string
+          content:
+            application/json:
+              schema:
+                type: object
+                properties:
+                  filename:
+                    type: string
+                  file_b64:
+                    type: string
