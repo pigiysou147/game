@@ -1,5 +1,6 @@
-import { _decorator, Component, Node, Prefab, instantiate, NodePool, Vec2, Vec3 } from 'cc';
+import { _decorator, Component, Node, Prefab, instantiate, NodePool, Vec2, Vec3, Color } from 'cc';
 import { Ball } from './Ball';
+import { CharacterManager } from './characters/CharacterManager';
 const { ccclass, property } = _decorator;
 
 @ccclass('GameManager')
@@ -11,6 +12,9 @@ export class GameManager extends Component {
 
     @property(Node)
     ballParent: Node | null = null;
+
+    @property(CharacterManager)
+    characterManager: CharacterManager | null = null;
 
     private ballPool: NodePool = new NodePool('Ball');
 
@@ -37,8 +41,23 @@ export class GameManager extends Component {
         const ball = node.getComponent(Ball);
         if (ball) {
             ball.setDespawnCallback(this.recycleBall.bind(this));
-            ball.launch(velocity);
+            // apply per-character shot params
+            let color = new Color(255, 255, 255, 255);
+            let damage = 1;
+            let bounces = 10;
+            let speedScale = 1.0;
+            if (this.characterManager && this.characterManager.isReady()) {
+                const stats = this.characterManager.getShotStats();
+                color = Color.fromHEX(new Color(), stats.colorHex);
+                damage = stats.damage;
+                bounces = stats.maxBounces;
+                speedScale = stats.speedScale;
+            }
+            ball.applyShotParams(color, damage, bounces);
+            ball.launch(new Vec2(velocity.x * speedScale, velocity.y * speedScale));
         }
+        // advance turn after firing
+        this.characterManager?.advanceTurn();
     }
 
     private recycleBall(node: Node) {
