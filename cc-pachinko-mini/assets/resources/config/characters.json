@@ -1,0 +1,9 @@
+{
+  "order": ["hero_sword", "hero_gunner", "hero_priest"],
+  "characters": [
+    { "id": "hero_sword",  "name": "剑姬",     "colorHex": "#FF6B6B", "damage": 2, "speedScale": 1.0, "maxBounces": 8 },
+    { "id": "hero_gunner", "name": "炮术公主", "colorHex": "#4DABF7", "damage": 1, "speedScale": 1.2, "maxBounces": 10 },
+    { "id": "hero_priest", "name": "修女",     "colorHex": "#51CF66", "damage": 1, "speedScale": 0.9, "maxBounces": 9 }
+  ]
+}
+
